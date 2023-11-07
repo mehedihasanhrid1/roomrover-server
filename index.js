@@ -27,6 +27,18 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const database = client.db("RoomRover");
+    app.post("/feedback", async (req, res) => {
+      try {
+        const userFeedback = database.collection("userQuery");
+        const feedback = req.body;
+        const result = await userFeedback.insertOne(feedback);
+        res.status(201).json({ message: "Feedback submitted successfully" });
+      } catch (error) {
+        console.error("Error saving user feedback:", error);
+        res.status(500).json({ error: "An error occurred while saving feedback" });
+      }
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
