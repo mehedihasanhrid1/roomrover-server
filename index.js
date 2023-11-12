@@ -43,7 +43,23 @@ const client = new MongoClient(uri, {
 // 		"reviewTime":"2023-11-11",
 // 		"CommentTitle":"Awsome Servie Provided",
 // 		"comment":"The room was very beautiful.I have enjoyed it a lot."
-// 	  }
+// 	  },
+//     {
+//       "image": "https://mdbcdn.b-cdn.net/img/new/avatars/18.jpg",
+//       "name": "Jessica Smith",
+//       "ratings": "5",
+//       "reviewTime": "2023-11-12",
+//       "commentTitle": "A Wonderful Experience",
+//       "comment": "Stunning views, impeccable service, and luxurious amenities. My stay at this Deluxe Ocean View Suite was absolutely delightful. I highly recommend it!"
+//     },
+//     {
+//       "image": "https://mdbcdn.b-cdn.net/img/new/avatars/8.jpg",
+//       "name": "John Anderson",
+//       "ratings": "4",
+//       "reviewTime": "2023-11-13",
+//       "commentTitle": "Great for Family Getaway",
+//       "comment": "The Family Retreat Villa provided the perfect setting for our family vacation. Spacious, clean, and well-equipped. The kids loved the private garden. Will definitely visit again!"
+//     }
 // 	  ]
 //     },
 //     {
@@ -57,14 +73,30 @@ const client = new MongoClient(uri, {
 //       "capacity": "3",
 //       "review": [
 //         {
+//         "image": "https://lh3.googleusercontent.com/a/ACg8ocKWJDVT0493QEyxEy6cWb7J4Ak4J2iaTIY7XAkNKLOXxA=s96-c",
+//         "name": "Mehedi Hasan",
+//         "ratings":"4",
+//         "reviewTime":"2023-11-11",
+//         "CommentTitle":"Awsome Servie Provided",
+//         "comment":"The room was very beautiful.I have enjoyed it a lot."
+//         },
+//         {
 //           "image": "https://mdbcdn.b-cdn.net/img/new/avatars/18.jpg",
 //           "name": "Jessica Smith",
 //           "ratings": "5",
 //           "reviewTime": "2023-11-12",
 //           "commentTitle": "A Wonderful Experience",
 //           "comment": "Stunning views, impeccable service, and luxurious amenities. My stay at this Deluxe Ocean View Suite was absolutely delightful. I highly recommend it!"
+//         },
+//         {
+//           "image": "https://mdbcdn.b-cdn.net/img/new/avatars/8.jpg",
+//           "name": "John Anderson",
+//           "ratings": "4",
+//           "reviewTime": "2023-11-13",
+//           "commentTitle": "Great for Family Getaway",
+//           "comment": "The Family Retreat Villa provided the perfect setting for our family vacation. Spacious, clean, and well-equipped. The kids loved the private garden. Will definitely visit again!"
 //         }
-//       ]
+//         ]
 //     },
 //     {
 //       "title": "Family Retreat Villa",
@@ -77,6 +109,22 @@ const client = new MongoClient(uri, {
 //       "capacity": "6",
 //       "review": [
 //         {
+//         "image": "https://lh3.googleusercontent.com/a/ACg8ocKWJDVT0493QEyxEy6cWb7J4Ak4J2iaTIY7XAkNKLOXxA=s96-c",
+//         "name": "Mehedi Hasan",
+//         "ratings":"4",
+//         "reviewTime":"2023-11-11",
+//         "CommentTitle":"Awsome Servie Provided",
+//         "comment":"The room was very beautiful.I have enjoyed it a lot."
+//         },
+//         {
+//           "image": "https://mdbcdn.b-cdn.net/img/new/avatars/18.jpg",
+//           "name": "Jessica Smith",
+//           "ratings": "5",
+//           "reviewTime": "2023-11-12",
+//           "commentTitle": "A Wonderful Experience",
+//           "comment": "Stunning views, impeccable service, and luxurious amenities. My stay at this Deluxe Ocean View Suite was absolutely delightful. I highly recommend it!"
+//         },
+//         {
 //           "image": "https://mdbcdn.b-cdn.net/img/new/avatars/8.jpg",
 //           "name": "John Anderson",
 //           "ratings": "4",
@@ -84,9 +132,11 @@ const client = new MongoClient(uri, {
 //           "commentTitle": "Great for Family Getaway",
 //           "comment": "The Family Retreat Villa provided the perfect setting for our family vacation. Spacious, clean, and well-equipped. The kids loved the private garden. Will definitely visit again!"
 //         }
-//       ]
+//         ]
 //     }      
 // ];
+
+
 
 async function run() {
   try {
@@ -107,6 +157,16 @@ async function run() {
     // const roomsCollection = database.collection("rooms");
     // await roomsCollection.insertMany(rooms);
     
+    app.get("/rooms", async (req, res) => {
+      try {
+        const roomsCollection = database.collection("rooms");
+        const rooms = await roomsCollection.find({}).toArray();
+        res.json(rooms);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+        res.status(500).json({ error: "An error occurred while fetching rooms" });
+      }
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
