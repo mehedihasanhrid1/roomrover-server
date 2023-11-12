@@ -137,7 +137,6 @@ const client = new MongoClient(uri, {
 // ];
 
 
-
 async function run() {
   try {
     const database = client.db("RoomRover");
@@ -167,6 +166,24 @@ async function run() {
         res.status(500).json({ error: "An error occurred while fetching rooms" });
       }
     });
+
+    app.get("/rooms/:id", async (req, res) => {
+      const roomId = req.params.id;
+      try {
+        const roomsCollection = database.collection("rooms");
+        const room = await roomsCollection.findOne({ _id:new ObjectId(roomId) });
+    
+        if (room) {
+          res.json(room);
+        } else {
+          res.status(404).json({ error: "Room not found" });
+        }
+      } catch (error) {
+        console.error("Error fetching room:", error);
+        res.status(500).json({ error: "An error occurred while fetching the room" });
+      }
+    });
+
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
