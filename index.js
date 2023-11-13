@@ -61,25 +61,17 @@ const client = new MongoClient(uri, {
 //       "comment": "The Family Retreat Villa provided the perfect setting for our family vacation. Spacious, clean, and well-equipped. The kids loved the private garden. Will definitely visit again!"
 //     }
 // 	  ]
-//     },
+//     }
+//     ,
 //     {
 //       "title": "Deluxe Ocean View Suite",
-//       "image": "https://i.ibb.co/qW0vNkD/h-2.jpg",
+//       "image": "https://i.ibb.co/RzLK443/h-16.jpg",
 //       "price": "$220",
 //       "roomSize": "600 sq. ft.",
-//       "availability": "Available",
 //       "roomDescription": "Indulge in the ultimate comfort of our Deluxe Ocean View Suite. This spacious suite features a private balcony overlooking the serene ocean, a plush king-size bed, and a luxurious en-suite bathroom. Perfect for a relaxing escape.",
 //       "specialOffers": "Complimentary breakfast for the entire stay.",
 //       "capacity": "3",
 //       "review": [
-//         {
-//         "image": "https://lh3.googleusercontent.com/a/ACg8ocKWJDVT0493QEyxEy6cWb7J4Ak4J2iaTIY7XAkNKLOXxA=s96-c",
-//         "name": "Mehedi Hasan",
-//         "ratings":"4",
-//         "reviewTime":"2023-11-11",
-//         "CommentTitle":"Awsome Servie Provided",
-//         "comment":"The room was very beautiful.I have enjoyed it a lot."
-//         },
 //         {
 //           "image": "https://mdbcdn.b-cdn.net/img/new/avatars/18.jpg",
 //           "name": "Jessica Smith",
@@ -97,7 +89,8 @@ const client = new MongoClient(uri, {
 //           "comment": "The Family Retreat Villa provided the perfect setting for our family vacation. Spacious, clean, and well-equipped. The kids loved the private garden. Will definitely visit again!"
 //         }
 //         ]
-//     },
+//     }
+//     ,
 //     {
 //       "title": "Family Retreat Villa",
 //       "image": "https://i.ibb.co/8Y6h2kN/h-5.jpg",
@@ -152,9 +145,21 @@ async function run() {
       }
     });
 
+    app.post("/bookings", async (req, res) => {
+      try {
+        const userBookings = database.collection("Bookings");
+        const bookings = req.body;
+        const result = await userBookings.insertOne(bookings);
+        res.status(201).json({ message: "Booking Data Updated successfully" });
+      } catch (error) {
+        console.error("Error update booking:", error);
+        res.status(500).json({ error: "An error occurred while saving booking data" });
+      }
+    });
+
     //update the room
     // const roomsCollection = database.collection("rooms");
-    // await roomsCollection.insertMany(rooms);
+    // await roomsCollection.insertMany(newRooms);
     
     app.get("/rooms", async (req, res) => {
       try {
@@ -183,7 +188,28 @@ async function run() {
         res.status(500).json({ error: "An error occurred while fetching the room" });
       }
     });
-
+    
+    app.put('/update/:id', async (req, res) => {
+      try {    
+        const roomId = req.params.id;
+        const { capacity } = req.body;
+         
+        const result = await database.collection("rooms").updateOne(
+          { _id: new ObjectId(roomId) },
+          { $set: { capacity } }
+        );
+    
+        if (result.matchedCount === 0) {
+          res.status(404).send('Room not found');
+        } else {
+          res.status(200).send('Room capacity updated successfully');
+        }
+      } catch (error) {
+        console.error('Error updating room capacity:', error);
+        res.status(500).send('Server error');
+      }
+    });
+    
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
