@@ -8,14 +8,16 @@ const cookieParser = require("cookie-parser");
 const port = process.env.PORT || 5000;
 
 const corsConfig = {
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
-  credentials: true,
+  origin:['http://localhost:5173' , 'https://room-rover.web.app' , 'https://room-rover.firebaseapp.com'],
+credentials:true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 };
+
 
 app.use(cors(corsConfig));
 app.use(express.json());
 app.use(cookieParser());
+
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.lbqsrfq.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -99,7 +101,8 @@ async function run() {
       });
       res.cookie('JWT_TOKEN', token, {
               httpOnly: true,
-              secure: false
+              secure: true,
+              sameSite: 'none'
           })
           .send({ success: true })
   })

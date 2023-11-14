@@ -10,5 +10,4 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 
-
 .vercel
